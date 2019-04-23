@@ -1,14 +1,13 @@
-# h5g-hook
+# Guardian
 
-「サーカスジャンプ」フックでジャンプするゲーム
-<https://liberapp.net/applications/c8f40e00-6264-11e9-b9c7-bb4cf56279c8>
+障害物を押しのけるゲーム
 
 ## ビルド方法
 
 プロジェクトフォルダと同じ階層にゲームライブラリを配置してください。
 
 ```
-h5g-hook/
+h5g-guardian/
 egret-game-library-master/
 ```
 
