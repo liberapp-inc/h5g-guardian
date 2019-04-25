@@ -1,13 +1,15 @@
 // Liberapp 2019 - Tahiti Katagai
-// プレイヤー　押しのけ守護神 Guardian
+// プレイヤー　押しのけガードマン Guardian
 
 class Player extends PhysicsObject{
 
     static I:Player = null;
 
     radius:number;
+    scrollSpeed:number;
     button:Button;
-    hookR:number = 0;
+    buttonOffsetX:number = 0;
+    buttonOffsetY:number = 0;
     state:()=>void = this.stateNone;
     step:number = 0;
 
@@ -16,15 +18,15 @@ class Player extends PhysicsObject{
 
         Player.I = this;
         this.radius = PLAYER_RADIUS_PER_W * Util.width;
+        this.scrollSpeed = Util.height / (60 * 2);
         this.setDisplay( px, py );
         this.setBody( px, py );
         Camera2D.transform( this.display );
         
-        this.button = new Button( null, 0, 0, 0.5, 0.5, 1, 1, 0x000000, 0.0, null );
+        this.button = new Button( null, 0, 0, 0.5, 0.5, 1, 1, 0x000000, 0.0, null ); // 透明な全画面ボタン
     }
 
     onDestroy(){
-        super.onDestroy();
         this.button.destroy();
         Player.I = null;
     }
@@ -44,23 +46,14 @@ class Player extends PhysicsObject{
     }
 
     setBody( px:number, py:number ){
-        this.body = new p2.Body( {gravityScale:0, mass:1, position:[this.p2m(px), this.p2m(py)] } );
+        this.body = new p2.Body( {gravityScale:0, mass:1, position:[this.p2m(px), this.p2m(py)], type:p2.Body.STATIC } );
         this.body.addShape(new p2.Circle({ radius:this.p2m(this.radius) }));
         this.body.displays = [this.display];
         PhysicsObject.world.addBody(this.body);
-        PhysicsObject.world.on("impact",  this.conflict, this);
-    }
-
-    conflict(e){
-        if( this.state != this.stateNone ){
-            this.gameOver();
-            this.setStateNone();
-        }
     }
 
     fixedUpdate() {
         this.state();
-        Camera2D.x = this.px - Util.width*0.25;
         Camera2D.transform( this.display );
     }
 
@@ -74,24 +67,23 @@ class Player extends PhysicsObject{
         this.step = 0;
     }
     stateMove() {
-    }
+        // Camera2D.y -= this.scrollSpeed;
 
-    gameOver(){
-        new GameOver();
-        PhysicsObject.deltaScale = 0.1;
-        const r = this.radius * 2 * Camera2D.scale;
-        for( let i=0 ; i<5 ; i++ ) {
-            let a = rand() * Math.PI * 2;
-            let vx =  Math.cos( a );
-            let vy = -Math.sin( a );
-            let rv = r * ( 2 + i );
-            new EffectLine(
-                this.display.x + vx * r,
-                this.display.y + vy * r,
-                vx * rv,
-                vy * rv,
-                PLAYER_COLOR );
+        const mx = this.mx;
+        const my = this.my;
+
+        if( this.button.press ){
+            this.buttonOffsetX = this.px - this.button.x;
+            this.buttonOffsetY = this.py - this.button.y;
         }
-        new EffectCircle( this.display.x, this.display.y, r, PLAYER_COLOR );
+        else{
+            this.px = Util.clamp( this.button.x + this.buttonOffsetX, this.radius, Util.width  - this.radius );
+            this.py = Util.clamp( this.button.y + this.buttonOffsetY, this.radius, Util.height - this.radius );
+            this.buttonOffsetX = this.px - this.button.x;
+            this.buttonOffsetY = this.py - this.button.y;
+        }
+
+        this.body.velocity[0] = this.mx - mx;
+        this.body.velocity[1] = this.my - my;
     }
 }

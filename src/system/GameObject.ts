@@ -31,7 +31,7 @@ abstract class GameObject {
     static process(){
         GameObject.objects.forEach( obj => obj.update() );
         GameObject.objects = GameObject.objects.filter( obj =>{
-            if( obj.deleteFlag ) obj.delete();
+            if( obj.deleteFlag ) obj._delete();
             return ( !obj.deleteFlag );
         } );
         if( GameObject.transit ) {
@@ -41,11 +41,11 @@ abstract class GameObject {
         }
     }
     static dispose(){
-        GameObject.objects = GameObject.objects.filter( obj => { obj.destroy(); obj.delete(); return false } );
+        GameObject.objects = GameObject.objects.filter( obj => { obj.destroy(); obj._delete(); return false } );
     }
 
     protected deleteFlag;
-    private delete(){
+    protected _delete(){
         this.onDestroy();
         if( this.display ){
             GameObject.display.removeChild(this.display);

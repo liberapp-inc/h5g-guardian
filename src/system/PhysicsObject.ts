@@ -1,7 +1,6 @@
 // Liberapp 2019 Tahiti Katagai
 // 物理エンジンp2オブジェクト
 //  Unityと同じように物理系はfixedUpdate()に処理を記述する。（update()はオーバライドしない）
-//  onDestroy()を記述する際はsuper.onDestroy()コールを忘れずに。（p2.Bodyを削除しているため）
 
 abstract class PhysicsObject extends GameObject {
 
@@ -9,14 +8,6 @@ abstract class PhysicsObject extends GameObject {
 
     constructor() {
         super();
-    }
-
-    onDestroy() {
-        if( this.body ){
-            PhysicsObject.world.removeBody(this.body);
-            this.body.displays = [];
-            this.body = null;
-        }
     }
 
     update() {
@@ -64,6 +55,19 @@ abstract class PhysicsObject extends GameObject {
             PhysicsObject.world.step( 1/60 * this.deltaScale, delta, 4 );
     }
 
+    protected _delete(){
+        this.onDestroy();
+        if( this.body ){
+            PhysicsObject.world.removeBody(this.body);
+            this.body.displays = [];
+            this.body = null;
+        }
+        if( this.display ){
+            GameObject.display.removeChild(this.display);
+            this.display = null;
+        }
+    }
+    
     static pixelToMeter(pixel: number)  : number { return pixel * PhysicsObject.meterPerPixel; }
     static meterToPixel(meter: number)  : number { return meter * PhysicsObject.pixelPerMeter; }
     

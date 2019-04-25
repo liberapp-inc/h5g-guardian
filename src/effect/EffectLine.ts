@@ -11,6 +11,21 @@ class EffectLine extends GameObject{
     static readonly maxFrame:number = 30;
     frame:number = 0;
 
+    static create( x:number, y:number, r:number, color:number, count:number=4 ){
+        for( let i=0 ; i<count ; i++ ) {
+            let a = rand() * Math.PI * 2;
+            let vx =  Math.cos( a );
+            let vy = -Math.sin( a );
+            let vr = r * ( 2 + i );
+            new EffectLine(
+                x + vx * r,
+                y + vy * r,
+                vx * vr,
+                vy * vr,
+                color );
+        }
+    }
+
     constructor( x:number, y:number, vx:number, vy:number, color:number=0xffc000 ) {
         super();
 

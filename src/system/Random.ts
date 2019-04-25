@@ -2,11 +2,11 @@
 // ランダム XorShift
 // シード指定で乱数周期を再現できる
 
+// global
 function rand():number { return globalRandom.v(); }                                     // 0以上 1未満
 function randF( min:number, max:number ):number { return globalRandom.f(min, max); }    // min以上 max未満
 function randI( min:number, max:number ):number { return globalRandom.i(min, max); }    // min以上 max未満（整数）
 function randBool():boolean { return globalRandom.bool(); }
-let globalRandom = new Random( Math.floor( Math.random()*Random.max ) ); // singleton instance
 
 class Random {
 
@@ -35,3 +35,6 @@ class Random {
         return this.w = (this.w ^ (this.w >>> 19)) ^ (t ^ (t >>> 8)); 
     }
 }
+
+let globalRandom = new Random( Math.floor( Math.random()*Random.max ) ); // singleton instance
+

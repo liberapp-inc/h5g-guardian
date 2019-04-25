@@ -10,19 +10,14 @@ class Block extends PhysicsObject{
 
     static newBlock( px:number, py:number ){
         const s = BLOCK_SIZE_PER_W * Util.width;
-        new Block( px, py, s, s, Math.PI*0.25 );
-    }
-    static newFloor( px:number, py:number ){
-        const w = FLOOR_SIZE_PER_W * Util.width;
-        const h = Util.height - py;
-        new Block( px, py+h*0.5, w * 0.7, h, 0 );
+        new Block( px, py, s, s, 0 );
     }
     constructor( px:number, py:number, w:number, h:number, r:number ) {
         super();
 
         Block.blocks.push(this);
-        this.sizeW = w;
-        this.sizeH = h;
+        this.sizeW = w * 0.9;
+        this.sizeH = h * 0.9;
         this.color = BLOCK_COLOR;
         this.setDisplay( px, py );
         this.setBody( px, py );
@@ -51,16 +46,17 @@ class Block extends PhysicsObject{
     }
 
     setBody( px:number, py:number ){
-        this.body = new p2.Body( {gravityScale:0, mass:1, position:[this.p2m(px), this.p2m(py)], type:p2.Body.STATIC } );
+        this.body = new p2.Body( {gravityScale:1, mass:1, position:[this.p2m(px), this.p2m(py)] } );
         this.body.addShape(new p2.Box( { width:this.p2m(this.sizeW), height:this.p2m(this.sizeH) } ), [0, 0], 0);
         this.body.displays = [this.display];
+        this.body.velocity[1] = Wave.I.speedY * 2;
         PhysicsObject.world.addBody(this.body);
     }
 
     fixedUpdate() {
         Camera2D.transform( this.display );
 
-        if( this.display.x <= -2 * Util.width ){
+        if( (this.display.x - Util.width*0.6)**2 > (Util.width*0.5)**2 || this.display.y > Util.height * 1.2 ){
             this.destroy();
         }
     }
