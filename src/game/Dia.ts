@@ -1,7 +1,7 @@
 // Liberapp 2019 - Tahiti Katagai
 // 守られる人
 
-class Ward extends PhysicsObject{
+class Dia extends PhysicsObject{
 
     radius:number;
     hit:boolean = false;
@@ -9,7 +9,7 @@ class Ward extends PhysicsObject{
     constructor( px:number, py:number ) {
         super();
 
-        this.radius = WARD_RADIUS_PER_W * Util.width;
+        this.radius = DIA_RADIUS_PER_W * Util.width;
         this.setDisplay( px, py );
         this.setBody( px, py );
         this.body.angle = Math.PI * 0.25;
@@ -26,7 +26,7 @@ class Ward extends PhysicsObject{
         GameObject.display.addChild(this.display);
         shape.x = px;
         shape.y = py;
-        shape.graphics.lineStyle( 5, WARD_COLOR );
+        shape.graphics.lineStyle( 5, DIA_COLOR );
         shape.graphics.drawRect( -this.radius, -this.radius, 2*this.radius, 2*this.radius );
     }
 
@@ -36,24 +36,27 @@ class Ward extends PhysicsObject{
         this.body.addShape(new p2.Box( { width:size, height:size } ), [0, 0], 0);
         this.body.displays = [this.display];
         PhysicsObject.world.addBody(this.body);
-        PhysicsObject.world.on("impact",  this.conflict, this);
+        // PhysicsObject.world.on("impact",  this.conflict, this);
     }
 
     conflict(e){
-        // if( this.hit == false ){
-        //     this.hit = true;
+        if( this.hit == false ){
+            this.hit = true;
 
-        //     new GameOver();
-        //     PhysicsObject.deltaScale = 0.1;
-        //     Player.I.setStateNone();
+            new GameOver();
+            // PhysicsObject.deltaScale = 0.1;
+            Player.I.setStateNone();
             
-        //     const r = this.radius * 2 * Camera2D.scale;
-        //     EffectLine.create( this.display.x, this.display.y, r, WARD_COLOR );
-        //     new EffectCircle( this.display.x, this.display.y, r, PLAYER_COLOR );
-        // }
+            const r = this.radius * 2 * Camera2D.scale;
+            EffectLine.create( this.display.x, this.display.y, r, DIA_COLOR );
+            new EffectCircle( this.display.x, this.display.y, r, DIA_COLOR );
+        }
     }
 
     fixedUpdate() {
         Camera2D.transform( this.display );
+
+        if( this.body.velocity[0]**2 + this.body.velocity[1]**2 > 0 )
+            this.conflict(null);
     }
 }

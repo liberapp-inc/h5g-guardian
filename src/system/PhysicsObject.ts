@@ -41,7 +41,7 @@ abstract class PhysicsObject extends GameObject {
         PhysicsObject.height = PhysicsObject.pixelToMeter(Util.height);
 
         PhysicsObject.world = new p2.World();
-        PhysicsObject.world.gravity = [0, PhysicsObject.height * 0.04];
+        PhysicsObject.world.gravity = [0, PhysicsObject.height * 0.02];
         PhysicsObject.world.defaultContactMaterial.friction *= 2;
         PhysicsObject.lastTime = Date.now();
         PhysicsObject.deltaScale = 1;

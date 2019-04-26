@@ -3,18 +3,25 @@
 
 class Util{
 
+    public static width:  number;
     public static height: number;
-    public static width: number;
+
+    public static w( rate:number ){ return rate * Util.width;  }
+    public static h( rate:number ){ return rate * Util.height; }
 
     static init( eui:eui.UILayer ) {
-        this.height = eui.stage.stageHeight;
         this.width  = eui.stage.stageWidth;
+        this.height = eui.stage.stageHeight;
     }
 
     static clamp(value:number, min:number, max:number):number {
         if( value < min ) value = min;
         if( value > max ) value = max;
         return value;
+    }
+
+    static lerp( src:number, dst:number, rate01:number ){
+        return src + (dst-src) * rate01;
     }
 
     static color( r:number, g:number, b:number):number {

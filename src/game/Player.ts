@@ -12,6 +12,7 @@ class Player extends PhysicsObject{
     buttonOffsetY:number = 0;
     state:()=>void = this.stateNone;
     step:number = 0;
+    scale:number = 1;
 
     constructor( px:number, py:number ) {
         super();
@@ -50,11 +51,17 @@ class Player extends PhysicsObject{
         this.body.addShape(new p2.Circle({ radius:this.p2m(this.radius) }));
         this.body.displays = [this.display];
         PhysicsObject.world.addBody(this.body);
+        // PhysicsObject.world.on("impact",  this.conflict, this);
     }
+
+    // conflict(e){
+    //     this.scale = 1.2;
+    // }
 
     fixedUpdate() {
         this.state();
-        Camera2D.transform( this.display );
+        this.scale += (1 - this.scale) * 0.2;
+        Camera2D.transform( this.display, this.scale );
     }
 
     setStateNone(){
