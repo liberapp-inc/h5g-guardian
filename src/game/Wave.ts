@@ -4,16 +4,13 @@
 class Wave extends GameObject{
 
     static I:Wave = null;
-    static readonly speedMin = 1/(60*6);
+    static readonly speedMin = 1/(60*10);
     static readonly speedMax = 1/(60*3);
     random:Random;
     scroll:number = 0;
     period:number = 0;
     speedY:number;
     wave:number = 0;
-    meteo:number = 60*6;
-    step:number = 0;
-    route:number=0;
     map:number[] = null;
     mapIndex:number = 0;
 
@@ -42,17 +39,28 @@ class Wave extends GameObject{
             this.period -= length;
             this.wave++;
 
-            const bw = BLOCK_SIZE_PER_W  * Util.width;
+            const bw = BLOCK_SIZE_PER_W * Util.width;
             const bh = BLOCK_SIZE_PER_H * Util.height;
             for( let i=0 ; i<BLOCK_IN_W ; i++ ){
-                const type = this.map[this.mapIndex * BLOCK_IN_W + i];
-                switch( type ){
-                    case 0: break;
-                    case 1: Obstacle.newBox( (0.5 + i) * bw, 0.5 * bh );    break;
-                    case 2: Obstacle.newBar( (0.5 + i) * bw, 0.5 * bh );    break;
-                    case 3: Obstacle.newLong( (0.5 + i) * bw, 0.5 * bh );    break;
-                    case 4: Obstacle.newBall( (0.5 + i) * bw, 0.5 * bh );    break;
-                    case 5: Obstacle.newCross( (0.5 + i) * bw, 0.5 * bh );    break;
+                const data = this.map[this.mapIndex * BLOCK_IN_W + i];
+                const type = data & 0xf;
+                if( type != 0 ){
+                    const x = (0.5 + i) * bw;
+                    const y = -2.0 * bh;
+                    const scale = ((data >>  4) & 0xf) * 0.5 + 1;
+                    const angle = ((data >>  8) & 0xf) * (Math.PI*2/16);
+                    const move  = ((data >> 12) & 0xf) * (Math.PI*2/16);   // 真下０度、時計回り0~15
+                    const speed = ((data >> 16) & 0xf) * (bw*4/15);
+                    const vx = Math.sin(move) * -speed;
+                    const vy = Math.cos(move) *  speed;
+                    switch( type ){
+                        case 1: Obstacle.newBox( x, y, scale, angle, vx, vy );      break;
+                        case 2: Obstacle.newBox( x, y, scale, angle, vx, vy );      break;
+                        case 3: Obstacle.newLong( x, y, scale, angle, vx, vy );     break;
+                        case 4: Obstacle.newBall( x, y, scale,        vx, vy );     break;
+                        case 5: Obstacle.newCross( x, y, scale, angle, vx, vy );    break;
+                    }
+
                 }
             }
 
@@ -64,19 +72,27 @@ class Wave extends GameObject{
         }
     }
 
+    // 0x Speed,Move,Angle,Scale,Type
+
     map0:number[] = [
-        5,0,5,0,5,0,
-        0,5,0,5,0,5,
-        0,0,0,0,0,0,
-        4,4,4,4,4,4,
-        0,4,0,0,4,0,
-        3,0,1,1,0,3,
-        0,3,0,0,3,0,
-        2,0,2,0,2,0,
-        0,2,0,2,0,2,
-        1,1,1,1,1,1,
-        0,1,0,0,1,0,
+        0xf0004, 0x00000, 0x00000, 0x00000, 0x00000, 0xf0004,
+        0x00000, 0x00000, 0x00000, 0x00f41, 0x00000, 0x00000,
+        0x00000, 0x00000, 0x4c003, 0x00000, 0x00000, 0x00000,
+        0x4c002, 0x00000, 0x00000, 0x00000, 0x00000, 0x44002,
     ];
+    // map0:number[] = [
+    //     5,0,5,0,5,0,
+    //     0,5,0,5,0,5,
+    //     0,0,0,0,0,0,
+    //     4,4,4,4,4,4,
+    //     0,4,0,0,4,0,
+    //     3,0,1,1,0,3,
+    //     0,3,0,0,3,0,
+    //     2,0,2,0,2,0,
+    //     0,2,0,2,0,2,
+    //     1,1,1,1,1,1,
+    //     0,1,0,0,1,0,
+    // ];
     map1:number[] = [
         0,0,0,0,0,0,
         0,0,1,0,0,0,

@@ -48,7 +48,7 @@ class Player extends PhysicsObject{
 
     setBody( px:number, py:number ){
         this.body = new p2.Body( {gravityScale:0, mass:1, position:[this.p2m(px), this.p2m(py)], type:p2.Body.STATIC } );
-        this.body.addShape(new p2.Circle({ radius:this.p2m(this.radius) }));
+        this.body.addShape(new p2.Circle({ radius:this.p2m(this.radius), collisionGroup:PHYSICS_GROUP_PLAYER, collisionMask:PHYSICS_GROUP_OBSTACLE }));
         this.body.displays = [this.display];
         PhysicsObject.world.addBody(this.body);
         // PhysicsObject.world.on("impact",  this.conflict, this);

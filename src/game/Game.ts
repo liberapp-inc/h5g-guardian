@@ -2,14 +2,17 @@
 // ゲームシーン
 
 const PIXEL_PER_METER = 1;
-const PLAYER_RADIUS_PER_W = 1/10;
+const PLAYER_RADIUS_PER_W = 1/20;
 const DIA_RADIUS_PER_W = 1/32;
 
 const BLOCK_IN_W = 6;
 const BLOCK_IN_H = 10;
 const BLOCK_SIZE_PER_W = 1 / BLOCK_IN_W;
 const BLOCK_SIZE_PER_H = 1 / BLOCK_IN_H;
-const GRAVITY_PER_H = (1/300);
+
+const PHYSICS_GRAVITY_PER_H = 0.015;
+const PHYSICS_GROUP_PLAYER = 2;
+const PHYSICS_GROUP_OBSTACLE = 4;
 
 const SAVE_KEY_BESTSCORE = "guardian-bestScore";
 

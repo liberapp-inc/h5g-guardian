@@ -20,7 +20,7 @@ class Score extends GameObject{
 
         let bestScore = egret.localStorage.getItem(SAVE_KEY_BESTSCORE); // string
         if( bestScore == null ){
-            bestScore = "100";
+            bestScore = "15";
             egret.localStorage.setItem(SAVE_KEY_BESTSCORE, bestScore);
         }
         this.bestScore = parseInt( bestScore );
@@ -39,7 +39,7 @@ class Score extends GameObject{
     update(){
         if( Player.I.state == Player.I.stateNone ) return;
         
-        const px = Math.floor( Player.I.px * 0.1 );
+        const px = Wave.I.wave;
 
         if( this.point < px ){
             this.point = px;

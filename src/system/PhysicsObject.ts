@@ -11,6 +11,7 @@ abstract class PhysicsObject extends GameObject {
     }
 
     update() {
+        // reflect physics object to display
         if( this.display ) {
             const body = this.body;
             const display = this.display;
@@ -41,8 +42,7 @@ abstract class PhysicsObject extends GameObject {
         PhysicsObject.height = PhysicsObject.pixelToMeter(Util.height);
 
         PhysicsObject.world = new p2.World();
-        PhysicsObject.world.gravity = [0, PhysicsObject.height * 0.02];
-        PhysicsObject.world.defaultContactMaterial.friction *= 2;
+        PhysicsObject.world.gravity = [0, PhysicsObject.height * PHYSICS_GRAVITY_PER_H ];
         PhysicsObject.lastTime = Date.now();
         PhysicsObject.deltaScale = 1;
     }

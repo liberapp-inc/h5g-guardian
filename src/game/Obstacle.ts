@@ -9,21 +9,21 @@ enum ObstacleType{
 
 class Obstacle extends PhysicsObject{
 
-    static newBox( px:number, py:number, scale:number=1 ){
-        new Obstacle( ObstacleType.Box, px, py, Util.w( BLOCK_SIZE_PER_W * scale ), Util.h( BLOCK_SIZE_PER_H * scale ) );
+    static newBox( px:number, py:number, scale:number, angle:number, vx:number, vy:number ):Obstacle{
+        return new Obstacle( ObstacleType.Box, px, py, Util.w( BLOCK_SIZE_PER_W * scale ), Util.h( BLOCK_SIZE_PER_H * scale ), angle, vx, vy );
     }
-    static newBar( px:number, py:number ){
-        new Obstacle( ObstacleType.Box, px, py, Util.w( BLOCK_SIZE_PER_W * 2 ), Util.h( BLOCK_SIZE_PER_H ) );
+    static newBar( px:number, py:number, scale:number, angle:number, vx:number, vy:number ):Obstacle{
+        return new Obstacle( ObstacleType.Box, px, py, Util.w( BLOCK_SIZE_PER_W * 2 * scale ), Util.h( BLOCK_SIZE_PER_H * scale ), angle, vx, vy );
     }
-    static newLong( px:number, py:number ){
-        new Obstacle( ObstacleType.Box, px, py, Util.w( BLOCK_SIZE_PER_W * 3 ), Util.h( BLOCK_SIZE_PER_H * 0.5 ) );
+    static newLong( px:number, py:number, scale:number, angle:number, vx:number, vy:number ):Obstacle{
+        return new Obstacle( ObstacleType.Box, px, py, Util.w( BLOCK_SIZE_PER_W * 3 * scale ), Util.h( BLOCK_SIZE_PER_H * scale ), angle, vx, vy );
     }
-    static newBall( px:number, py:number, scale:number=1 ){
-        new Obstacle( ObstacleType.Ball, px, py, Util.w( BLOCK_SIZE_PER_W * 0.5 * scale ), 0 );
+    static newBall( px:number, py:number, scale:number, vx:number, vy:number ):Obstacle{
+        return new Obstacle( ObstacleType.Ball, px, py, Util.w( BLOCK_SIZE_PER_W * 0.5 * scale ), 0, 0, vx, vy );
     }
-    static newCross( px:number, py:number, scale:number=1 ){
-        scale *= 2/3;
-        new Obstacle( ObstacleType.Cross, px, py, Util.w( BLOCK_SIZE_PER_W * scale ), Util.h( BLOCK_SIZE_PER_H * scale ) );
+    static newCross( px:number, py:number, scale:number, angle:number, vx:number, vy:number ):Obstacle{
+        scale *= 1/3;
+        return new Obstacle( ObstacleType.Cross, px, py, Util.w( BLOCK_SIZE_PER_W * scale ), Util.h( BLOCK_SIZE_PER_H * scale ), angle, vx, vy );
     }
     
     static blocks:Obstacle[] = [];
@@ -33,7 +33,7 @@ class Obstacle extends PhysicsObject{
     sizeH:number;
     color:number;
 
-    constructor( type:ObstacleType, px:number, py:number, w:number, h:number, angle:number=0, vx:number=0, vy:number=0  ) {
+    constructor( type:ObstacleType, px:number, py:number, w:number, h:number, angle:number, vx:number, vy:number ) {
         super();
 
         Obstacle.blocks.push(this);
@@ -46,7 +46,7 @@ class Obstacle extends PhysicsObject{
         this.body.angle = angle;
         this.display.rotation = this.body.angle * 180 / Math.PI;
         this.body.velocity[0] = vx;
-        this.body.velocity[1] = vy + Wave.I.speedY * 20;
+        this.body.velocity[1] = vy + Wave.I.speedY * 15;
         Camera2D.transform( this.display );
     }
 
@@ -87,16 +87,16 @@ class Obstacle extends PhysicsObject{
         switch( this.type ){
             case ObstacleType.Box:
             this.body = new p2.Body( {gravityScale:1, mass:1, position:[this.p2m(px), this.p2m(py)]} );
-            this.body.addShape(new p2.Box( { width:this.p2m(this.sizeW), height:this.p2m(this.sizeH) } ), [0, 0], 0);
+            this.body.addShape(new p2.Box( { width:this.p2m(this.sizeW), height:this.p2m(this.sizeH), collisionGroup:PHYSICS_GROUP_OBSTACLE, collisionMask:PHYSICS_GROUP_PLAYER|PHYSICS_GROUP_OBSTACLE } ), [0, 0], 0);
             break;
             case ObstacleType.Ball:
             this.body = new p2.Body( {gravityScale:1, mass:1, position:[this.p2m(px), this.p2m(py)]} );
-            this.body.addShape(new p2.Circle({ radius:this.p2m(this.sizeW) }));
+            this.body.addShape(new p2.Circle({ radius:this.p2m(this.sizeW), collisionGroup:PHYSICS_GROUP_OBSTACLE, collisionMask:PHYSICS_GROUP_PLAYER|PHYSICS_GROUP_OBSTACLE }));
             break;
             case ObstacleType.Cross:
             this.body = new p2.Body( {gravityScale:1, mass:3, position:[this.p2m(px), this.p2m(py)]} );
-            this.body.addShape(new p2.Box( { width:this.p2m(this.sizeW*3), height:this.p2m(this.sizeH  ) } ), [0, 0], 0);
-            this.body.addShape(new p2.Box( { width:this.p2m(this.sizeW  ), height:this.p2m(this.sizeH*3) } ), [0, 0], 0);
+            this.body.addShape(new p2.Box( { width:this.p2m(this.sizeW*3), height:this.p2m(this.sizeH  ), collisionGroup:PHYSICS_GROUP_OBSTACLE, collisionMask:PHYSICS_GROUP_PLAYER|PHYSICS_GROUP_OBSTACLE } ), [0, 0], 0);
+            this.body.addShape(new p2.Box( { width:this.p2m(this.sizeW  ), height:this.p2m(this.sizeH*3), collisionGroup:PHYSICS_GROUP_OBSTACLE, collisionMask:PHYSICS_GROUP_PLAYER|PHYSICS_GROUP_OBSTACLE } ), [0, 0], 0);
             break;
         }
         this.body.displays = [this.display];
