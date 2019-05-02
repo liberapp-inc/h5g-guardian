@@ -24,7 +24,7 @@ class Random {
     private z:number = 521288629;
     public  w:number;
 
-    constructor(seed = 88675123) {
+    constructor(seed = Math.floor( Math.random()*Random.max )) {
         this.w = seed;
     }
 
@@ -36,5 +36,5 @@ class Random {
     }
 }
 
-let globalRandom = new Random( Math.floor( Math.random()*Random.max ) ); // singleton instance
+let globalRandom = new Random(); // singleton instance
 

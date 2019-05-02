@@ -10,20 +10,20 @@ enum ObstacleType{
 class Obstacle extends PhysicsObject{
 
     static newBox( px:number, py:number, scale:number, angle:number, vx:number, vy:number ):Obstacle{
-        return new Obstacle( ObstacleType.Box, px, py, Util.w( BLOCK_SIZE_PER_W * scale ), Util.h( BLOCK_SIZE_PER_H * scale ), angle, vx, vy );
+        return new Obstacle( ObstacleType.Box, px, py, Util.w( BLOCK_SIZE_PER_W * scale ), Util.w( BLOCK_SIZE_PER_W * scale ), angle, vx, vy );
     }
     static newBar( px:number, py:number, scale:number, angle:number, vx:number, vy:number ):Obstacle{
-        return new Obstacle( ObstacleType.Box, px, py, Util.w( BLOCK_SIZE_PER_W * 2 * scale ), Util.h( BLOCK_SIZE_PER_H * scale ), angle, vx, vy );
+        return new Obstacle( ObstacleType.Box, px, py, Util.w( BLOCK_SIZE_PER_W * 2 * scale ), Util.w( BLOCK_SIZE_PER_W * scale ), angle, vx, vy );
     }
     static newLong( px:number, py:number, scale:number, angle:number, vx:number, vy:number ):Obstacle{
-        return new Obstacle( ObstacleType.Box, px, py, Util.w( BLOCK_SIZE_PER_W * 3 * scale ), Util.h( BLOCK_SIZE_PER_H * scale ), angle, vx, vy );
+        return new Obstacle( ObstacleType.Box, px, py, Util.w( BLOCK_SIZE_PER_W * 3 * scale ), Util.w( BLOCK_SIZE_PER_W * 0.5 * scale ), angle, vx, vy );
     }
     static newBall( px:number, py:number, scale:number, vx:number, vy:number ):Obstacle{
         return new Obstacle( ObstacleType.Ball, px, py, Util.w( BLOCK_SIZE_PER_W * 0.5 * scale ), 0, 0, vx, vy );
     }
     static newCross( px:number, py:number, scale:number, angle:number, vx:number, vy:number ):Obstacle{
         scale *= 1/3;
-        return new Obstacle( ObstacleType.Cross, px, py, Util.w( BLOCK_SIZE_PER_W * scale ), Util.h( BLOCK_SIZE_PER_H * scale ), angle, vx, vy );
+        return new Obstacle( ObstacleType.Cross, px, py, Util.w( BLOCK_SIZE_PER_W * scale ), Util.w( BLOCK_SIZE_PER_W * scale ), angle, vx, vy );
     }
     
     static blocks:Obstacle[] = [];
@@ -39,7 +39,7 @@ class Obstacle extends PhysicsObject{
         Obstacle.blocks.push(this);
         this.type = type;
         this.sizeW = Math.max( w - Util.w(BLOCK_SIZE_PER_W * 0.1), 0 );
-        this.sizeH = Math.max( h - Util.h(BLOCK_SIZE_PER_H * 0.1), 0 );
+        this.sizeH = Math.max( h - Util.w(BLOCK_SIZE_PER_W * 0.1), 0 );
         this.color = BLOCK_COLOR;
         this.setDisplay( px, py );
         this.setBody( px, py );
@@ -60,7 +60,7 @@ class Obstacle extends PhysicsObject{
 
         const shape = new egret.Shape();
         this.display = shape;
-        GameObject.display.addChild(this.display);
+        GameObject.display.addChildAt(this.display, 1);
         shape.x = px;
         shape.y = py;
         shape.graphics.beginFill( this.color );
@@ -94,7 +94,7 @@ class Obstacle extends PhysicsObject{
             this.body.addShape(new p2.Circle({ radius:this.p2m(this.sizeW), collisionGroup:PHYSICS_GROUP_OBSTACLE, collisionMask:PHYSICS_GROUP_PLAYER|PHYSICS_GROUP_OBSTACLE }));
             break;
             case ObstacleType.Cross:
-            this.body = new p2.Body( {gravityScale:1, mass:3, position:[this.p2m(px), this.p2m(py)]} );
+            this.body = new p2.Body( {gravityScale:1, mass:1, position:[this.p2m(px), this.p2m(py)]} );
             this.body.addShape(new p2.Box( { width:this.p2m(this.sizeW*3), height:this.p2m(this.sizeH  ), collisionGroup:PHYSICS_GROUP_OBSTACLE, collisionMask:PHYSICS_GROUP_PLAYER|PHYSICS_GROUP_OBSTACLE } ), [0, 0], 0);
             this.body.addShape(new p2.Box( { width:this.p2m(this.sizeW  ), height:this.p2m(this.sizeH*3), collisionGroup:PHYSICS_GROUP_OBSTACLE, collisionMask:PHYSICS_GROUP_PLAYER|PHYSICS_GROUP_OBSTACLE } ), [0, 0], 0);
             break;
@@ -106,7 +106,8 @@ class Obstacle extends PhysicsObject{
     fixedUpdate() {
         Camera2D.transform( this.display );
 
-        if( (this.display.x - Util.width*0.5)**2 > (Util.width*0.7)**2 || this.display.y > Util.height * 1.2 ){
+        const r = this.body.boundingRadius;
+        if( (this.display.x - Util.width*0.5)**2 > (Util.width*0.5+r)**2 || this.display.y > Util.height+r ){
             this.destroy();
         }
     }
