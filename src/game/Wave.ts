@@ -5,7 +5,7 @@ class Wave extends GameObject{
 
     static I:Wave = null;
     static readonly speedMin = 1/(60*10);
-    static readonly speedMax = 1/(60*3);
+    static readonly speedMax = 1/(60*2.0);
     random:Random;
     scroll:number = 0;
     period:number = 0;
@@ -28,7 +28,7 @@ class Wave extends GameObject{
     update() {
         if( Player.I.state == Player.I.stateNone ) return;
 
-        const hardRate = Util.clamp( this.scroll / (4 * Util.height), 0, 1 );
+        const hardRate = Util.clamp( this.scroll / (10 * Util.height), 0, 1 );
         this.speedY = Util.height * Util.lerp( Wave.speedMin,  Wave.speedMax, hardRate );
         this.scroll += this.speedY;
         this.period += this.speedY;
