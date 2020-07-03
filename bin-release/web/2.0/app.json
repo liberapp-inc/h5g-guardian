@@ -1,0 +1,21 @@
+{
+  "title": "ガードマン",
+  "lead": "丸いボールを動かしてダイヤを守るんだ！",
+  "description": "丸いボールを動かしてダイヤを守るんだ！せまってくるブロックたちを押しのけてダイヤに触れさせないようにしよう",
+  
+  "useLeaderboard": true,
+  "sdkVersion": "0.9",
+  "leaderboards": [
+    {
+      "name": "default",
+      "displayName": "ハイスコア",
+      "sortOrder": "HIGHER_IS_BETTER",
+      "scoreType": "CUSTOM",
+      "unit": "pt",
+      "decimalOffset": 0
+    }
+  ],
+
+  "author": "Liberapp",
+  "copyright": "Liberapp. Created by Tahiti Katagai"
+}

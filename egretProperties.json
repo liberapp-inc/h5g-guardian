@@ -25,5 +25,10 @@
       "name": "physics",
       "path": "../egret-game-library-master/physics/libsrc"
     }
-  ]
+  ],
+  "urlParams": {
+      "t": "73b04c90-5ea5-11ea-b91e-433c8182f6d6",
+      "u": "371c8f17-fa74-4c1e-95db-a723782a41a7",
+      "a": "9d7e8d25-b93c-4f21-97f4-e737f181da59"
+  }  
 }

@@ -1,6 +1,8 @@
 // Guardian
 // Liberapp 2019 - Tahiti Katagai
 
+const SDK = true;
+
 class Main extends eui.UILayer {
 
     public constructor() {
@@ -8,12 +10,16 @@ class Main extends eui.UILayer {
         this.once(egret.Event.ADDED_TO_STAGE, this.addToStage, this);
     }
  
-    private addToStage() {
+    private async addToStage() {
         Util.init( this );
         GameObject.initial( this.stage );
         PhysicsObject.prepare( PIXEL_PER_METER );
         Camera2D.initial();
-        Game.loadSceneGamePlay();
+
+        if( SDK ){
+            await Social.init();
+        }
+       Game.loadSceneGamePlay();
         egret.startTick(this.tickLoop, this);
     }
 

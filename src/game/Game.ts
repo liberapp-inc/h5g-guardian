@@ -14,7 +14,7 @@ const PHYSICS_GRAVITY_PER_H = 0.015;
 const PHYSICS_GROUP_PLAYER = 2;
 const PHYSICS_GROUP_OBSTACLE = 4;
 
-const SAVE_KEY_BESTSCORE = "guardian-bestScore";
+// const SAVE_KEY_BESTSCORE = "guardian-bestScore";
 
 const BACK_COLOR = 0x00f090;    // index.htmlで設定
 const FONT_COLOR = 0xffffff;
